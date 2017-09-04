@@ -1,0 +1,23 @@
+@font-face {
+	font-family: "nanumgothic";
+	src : url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css') format("truetype");
+}
+
+body {
+	font-family: "Roboto Mono", monospace;
+	/* text-align: center; */
+	margin: 0px;
+	overflow: hidden;
+}
+
+#main_canvas {
+	display:inline;
+	float:left;
+}
+
+#sub_canvas {
+	font-family: nanumgothic;
+	display:inline;
+	float:left;
+	width:auto;
+}
