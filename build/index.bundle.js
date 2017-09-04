@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,23 +68,107 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__visual_js__ = __webpack_require__(1);
+
+
+
+//Visual Effect
+(function() {
+    this.setup();
+    this.animate(0, 0);
+}).bind({
+    setup : function() {
+        this.main = new __WEBPACK_IMPORTED_MODULE_0__visual_js__["a" /* default */]();
+    },
+
+    update : function(t, dt) {
+        this.main.update(t, dt);
+    },
+
+    animate : function(oldt, nowt) {
+        this.update(nowt * 0.001, (nowt - oldt) * 0.001);
+        requestAnimationFrame(this.animate.bind(this, nowt));
+    }
+})();
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__visual_person_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__visual_camera_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__visual_ground_js__ = __webpack_require__(5);
+
+
+
+
+class Visual {
+    constructor() {
+        //Setup Size for render
+        this.resolution = {width : window.innerWidth, height : window.innerHeight};
+
+        //Setup Renderer
+        this.rdrr = new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* WebGLRenderer */]({ alpha: true, antialias: true });
+        this.rdrr.setSize(this.resolution.width, this.resolution.height);
+        document.body.appendChild(this.rdrr.domElement);
+
+        //Setup Camera for visual
+        this.camera = new __WEBPACK_IMPORTED_MODULE_2__visual_camera_js__["a" /* default */]();
+
+        //Setup Scene for visual
+        this.scene = new __WEBPACK_IMPORTED_MODULE_0_three__["f" /* Scene */]();
+
+        //Setup Scene objects
+        for(var i = 0 ; i < 200; i++) {
+            const person = new __WEBPACK_IMPORTED_MODULE_1__visual_person_js__["a" /* default */]();
+            this.scene.add(person);
+
+        }
+        this.scene.add(new __WEBPACK_IMPORTED_MODULE_3__visual_ground_js__["a" /* default */]());
+        
+    }   
+
+    update(t, dt) {
+
+        this.camera.update(t, dt);
+
+        this.scene.children.forEach((person)=>{
+            if(person.update) {
+                person.update(t, dt, this.camera);
+            }
+        })
+        this.rdrr.render(this.scene, this.camera);
+    }
+}
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Visual);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* unused harmony export WebGLRenderTargetCube */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return WebGLRenderTarget; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return WebGLRenderer; });
+/* unused harmony export WebGLRenderTarget */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return WebGLRenderer; });
 /* unused harmony export ShaderLib */
 /* unused harmony export UniformsLib */
 /* unused harmony export UniformsUtils */
 /* unused harmony export ShaderChunk */
 /* unused harmony export FogExp2 */
 /* unused harmony export Fog */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return Scene; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Scene; });
 /* unused harmony export LensFlare */
 /* unused harmony export Sprite */
 /* unused harmony export LOD */
 /* unused harmony export SkinnedMesh */
 /* unused harmony export Skeleton */
 /* unused harmony export Bone */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return Mesh; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Mesh; });
 /* unused harmony export LineSegments */
 /* unused harmony export LineLoop */
 /* unused harmony export Line */
@@ -124,11 +208,11 @@
 /* unused harmony export LightShadow */
 /* unused harmony export Light */
 /* unused harmony export StereoCamera */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return PerspectiveCamera; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return PerspectiveCamera; });
 /* unused harmony export OrthographicCamera */
 /* unused harmony export CubeCamera */
 /* unused harmony export ArrayCamera */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Camera; });
+/* unused harmony export Camera */
 /* unused harmony export AudioListener */
 /* unused harmony export PositionalAudio */
 /* unused harmony export AudioContext */
@@ -157,7 +241,7 @@
 /* unused harmony export InterleavedBuffer */
 /* unused harmony export InstancedBufferAttribute */
 /* unused harmony export Face3 */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return Object3D; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Object3D; });
 /* unused harmony export Raycaster */
 /* unused harmony export Layers */
 /* unused harmony export EventDispatcher */
@@ -182,7 +266,7 @@
 /* unused harmony export Line3 */
 /* unused harmony export Euler */
 /* unused harmony export Vector4 */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return Vector3; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return Vector3; });
 /* unused harmony export Vector2 */
 /* unused harmony export Quaternion */
 /* unused harmony export Color */
@@ -245,7 +329,7 @@
 /* unused harmony export SphereBufferGeometry */
 /* unused harmony export RingGeometry */
 /* unused harmony export RingBufferGeometry */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return PlaneGeometry; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return PlaneGeometry; });
 /* unused harmony export PlaneBufferGeometry */
 /* unused harmony export LatheGeometry */
 /* unused harmony export LatheBufferGeometry */
@@ -265,7 +349,7 @@
 /* unused harmony export ShadowMaterial */
 /* unused harmony export SpriteMaterial */
 /* unused harmony export RawShaderMaterial */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return ShaderMaterial; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return ShaderMaterial; });
 /* unused harmony export PointsMaterial */
 /* unused harmony export MeshPhysicalMaterial */
 /* unused harmony export MeshStandardMaterial */
@@ -274,7 +358,7 @@
 /* unused harmony export MeshNormalMaterial */
 /* unused harmony export MeshLambertMaterial */
 /* unused harmony export MeshDepthMaterial */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MeshBasicMaterial; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MeshBasicMaterial; });
 /* unused harmony export LineDashedMaterial */
 /* unused harmony export LineBasicMaterial */
 /* unused harmony export Material */
@@ -353,13 +437,13 @@
 /* unused harmony export SphericalReflectionMapping */
 /* unused harmony export CubeUVReflectionMapping */
 /* unused harmony export CubeUVRefractionMapping */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return RepeatWrapping; });
+/* unused harmony export RepeatWrapping */
 /* unused harmony export ClampToEdgeWrapping */
 /* unused harmony export MirroredRepeatWrapping */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return NearestFilter; });
+/* unused harmony export NearestFilter */
 /* unused harmony export NearestMipMapNearestFilter */
 /* unused harmony export NearestMipMapLinearFilter */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return LinearFilter; });
+/* unused harmony export LinearFilter */
 /* unused harmony export LinearMipMapNearestFilter */
 /* unused harmony export LinearMipMapLinearFilter */
 /* unused harmony export UnsignedByteType */
@@ -368,7 +452,7 @@
 /* unused harmony export UnsignedShortType */
 /* unused harmony export IntType */
 /* unused harmony export UnsignedIntType */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return FloatType; });
+/* unused harmony export FloatType */
 /* unused harmony export HalfFloatType */
 /* unused harmony export UnsignedShort4444Type */
 /* unused harmony export UnsignedShort5551Type */
@@ -44172,522 +44256,27 @@ function CanvasRenderer() {
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_track_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__visual_js__ = __webpack_require__(3);
-
-
-
-
-
-const button = document.querySelector("button");
-button.addEventListener("click", function(){
-	if (Tone.Transport.state === "started"){
-		// button.textContent = "START";
-		stop();
-	} else {
-		// button.textContent = "STOP";
-		start();
-	}
-});
-
-function stop() {
-	Tone.Transport.stop();
-}
-
-function start() {
-	Tone.Transport.start("+0.1", 0);
-}
-
-
-//Midi file Load... and...
-var Miditracks = [];
-MidiConvert.load("res/MIDI_sample.mid").then(function(midi){
-
-	//You have to check tracks for making notes.
-	console.log(midi);
-
-	// play each tracks with each sound
-	midi.tracks.forEach((track)=>{
-		Miditracks.push(new __WEBPACK_IMPORTED_MODULE_0__midi_track_js__["a" /* default */](4, Tone.Synth, track.notes));
-	})
-	
-	Tone.Transport.bpm.value = midi.bpm;
-	Tone.Transport.timeSignature = midi.timeSignature;
-	// button.classList.add("active")
-});
-
-
-
-//Visual Effect
-(function() {
-    this.setup();
-    this.animate(0, 0);
-}).bind({
-    setup : function() {
-        this.main = new __WEBPACK_IMPORTED_MODULE_1__visual_js__["a" /* default */](Miditracks);
-    },
-
-    update : function(t, dt) {
-        this.main.update(t, dt);
-    },
-
-    animate : function(oldt, nowt) {
-        this.update(nowt * 0.001, (nowt - oldt) * 0.001);
-        requestAnimationFrame(this.animate.bind(this, nowt));
-    }
-})();
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-class Track extends Tone.PolySynth{
-    constructor(polyphony, voice, notes) {
-        super(polyphony, voice);
-        this.track = new Tone.Part(this.playNote.bind(this), notes).start(0);
-        this.master = this.toMaster();
-        
-        this.event = {midi : 0};
-    }
-
-    playNote(time, event) {
-        this.master.triggerAttackRelease(event.name, event.duration, time, event.velocity);
-        this.event = event;
-        setTimeout(
-            ((midi)=>{ 
-                if(this.event.midi == midi) this.event = {midi : 0};
-            }).bind(this, this.event.midi), 
-            event.duration * 1000.0);
-    }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Track;
-;
-
-/***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__perlin_perlin_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__visual_canvas_js__ = __webpack_require__(8);
-
-
-
-
-
-
-class Visual {
-    constructor(tracks) {
-        //Setup Size for render
-        this.resolution = {width : 900, height : 900};
-
-        //Setup Renderer
-        this.rdrr = new __WEBPACK_IMPORTED_MODULE_0_three__["o" /* WebGLRenderer */]({ alpha: true, antialias: true });
-        this.rdrr.setSize(this.resolution.width, this.resolution.height);
-
-        this.rdrr.domElement.style.marginLeft = (window.innerWidth - this.resolution.width) * 0.15 + "px";
-        this.rdrr.domElement.style.marginTop = (window.innerHeight - this.resolution.height) * 0.5 + "px";
-        this.rdrr.domElement.style.boxShadow = "5px 5px 40px #AAAAAA";
-
-        console.log(document.getElementById("main_canvas"));
-        document.getElementById("main_canvas").appendChild(this.rdrr.domElement);
-
-        //Setup perlin noise
-        this.perlin = new __WEBPACK_IMPORTED_MODULE_1__perlin_perlin_js__["a" /* default */]({rdrr : this.rdrr, gridWidth : 16, gridHeight : 16, texWidth : 64, texHeight : 64});
-
-        //Setup Scene & add brushes
-        this.scene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x : - 6.25, y : 2.0}, this.rdrr, this.perlin));
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x : - 3.75, y : 2.0}, this.rdrr, this.perlin));
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x : - 1.25, y : 2.0}, this.rdrr, this.perlin));
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x :   1.25, y : 2.0}, this.rdrr, this.perlin));
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x :   3.75, y : 2.0}, this.rdrr, this.perlin));
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_2__visual_brush_js__["a" /* default */]({x :   6.25, y : 2.0}, this.rdrr, this.perlin));
-
-        //Setup Camera
-        this.camera = new __WEBPACK_IMPORTED_MODULE_0_three__["h" /* PerspectiveCamera */](45, this.resolution.width/ this.resolution.height, 1.0, 1000.0);
-        this.camera.position.z = 20.0;
-
-        //Setup Canvas 
-        //it's made for brush effect (unerasing)
-        this.canvas = new __WEBPACK_IMPORTED_MODULE_3__visual_canvas_js__["a" /* default */](this.rdrr, this.perlin);
-
-        //Get Tracks for Pitches
-        this.tracks = tracks;
-    }   
-
-    update(t, dt) {
-        //Perlin noise update
-        this.perlin.update(dt);
-
-        //update objects included scene
-        this.scene.children.forEach((brush, idx) => {
-            if(brush.update) {
-                var midi = 0.0;
-                if(!this.tracks[idx]) midi = 0.0;
-                else midi =  this.tracks[idx].event.midi;
-                brush.update(t, dt, midi / 100.0);
-            }
-        });
-
-        //update canvas
-        this.canvas.update(dt);
-
-        //render 
-        this.canvas.render(this.scene, this.camera);
-    }
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (Visual);
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grid_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__flow_js__ = __webpack_require__(6);
-
-
-
-
-
-class Perlin {
-  constructor(option) {
-    option = option || {};
-
-    if(option.rdrr == undefined) {
-      this.rdrr = new __WEBPACK_IMPORTED_MODULE_0_three__["o" /* WebGLRenderer */]({alpha : false});
-      this.rdrr.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(this.rdrr.domElement);
-    } else { this.rdrr = option.rdrr; }
-    // console.log(THREE);
-
-    this.grid = new __WEBPACK_IMPORTED_MODULE_1__grid_js__["a" /* default */](this.rdrr, option.gridWidth, option.gridHeight);
-    this.flow = new __WEBPACK_IMPORTED_MODULE_2__flow_js__["a" /* default */](this.rdrr, option.texWidth, option.texHeight, this.grid);
-
-    this.camera = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Camera */]();
-    this.scene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-    this.scene.add(new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-      new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-      new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshBasicMaterial */]({ map : this.flow.getTexture() })
-    ));
-
-    this.target = new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](1024, 1024, {
-      minFilter : __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-      magFilter : __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-      data : __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-    });
-  }
-
-  update(dt) {
-    this.grid.update(dt);
-    this.flow.update(dt);
-    this.rdrr.render(this.scene, this.camera, this.target);
-    
-  }
-
-  renderForDebug() {
-    this.rdrr.render(this.scene, this.camera);
-  }
-
-  get texture() { return this.target.texture; }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Perlin;
-
-
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
-
-
-/* Texture that get information of Grid */
-/*
-  Grid Class는 Grid 정보를 가진 Texture를 정의, 관리 해준다.
-  infoTexture의 정보는 아래와 같다.
-  r : 백터의 크기
-  g : 백터의 각도
-  b : 백터의 각속도
-*/
-
-class Grid {
-  constructor(rdrr, width, height) {
-    this.rdrr = rdrr;
-    this.width = width == undefined ? 4 : width;
-    this.height = height == undefined ? 4 : height;
-
-    this.infoTexture = new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](
-      this.width, this.height , {
-        minFilter : __WEBPACK_IMPORTED_MODULE_0_three__["f" /* NearestFilter */],
-        magFilter : __WEBPACK_IMPORTED_MODULE_0_three__["f" /* NearestFilter */],
-        wrapS : __WEBPACK_IMPORTED_MODULE_0_three__["j" /* RepeatWrapping */],
-        wrapT : __WEBPACK_IMPORTED_MODULE_0_three__["j" /* RepeatWrapping */],
-        data : __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-      }
-    );
-    this.tempTexture = new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](
-      this.width, this.height , {
-        minFilter : __WEBPACK_IMPORTED_MODULE_0_three__["f" /* NearestFilter */],
-        magFilter : __WEBPACK_IMPORTED_MODULE_0_three__["f" /* NearestFilter */],
-        wrapS : __WEBPACK_IMPORTED_MODULE_0_three__["j" /* RepeatWrapping */],
-        wrapT : __WEBPACK_IMPORTED_MODULE_0_three__["j" /* RepeatWrapping */],
-        data : __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-      }
-    );
-
-    this.commonCamera = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Camera */]();
-
-    this.tempScene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-    this.infoScene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-
-    this.uniforms = {
-      unif_texture : { type : "t", value : this.infoTexture.texture },
-      unif_dt : { type : "1f", value : 0.0},
-      unif_isinit : { type : "1f", value : 0.0},
-      unif_seed : { type : "1f", value : Math.random() }
-    };
-    this.tempMesh = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-      new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-      new __WEBPACK_IMPORTED_MODULE_0_three__["l" /* ShaderMaterial */]({
-        uniforms : this.uniforms,
-        fragmentShader : `
-        uniform sampler2D unif_texture;
-        uniform float unif_dt;
-        uniform float unif_isinit;
-        uniform float unif_seed;
-
-        varying vec2 vtex;
-
-        float rand(vec2 co){
-            return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-        }
-
-        void main(void) {
-          vec4 retcolor = vec4(0.0);
-          if(unif_isinit < 0.5) {
-            retcolor = vec4(
-              rand(vtex + unif_seed + 0.01),
-              rand(vtex + unif_seed + 0.02),
-              rand(vtex + unif_seed + 0.03),
-              1.0);
-          }
-          else {
-            vec3 data = texture2D(unif_texture, vtex).rgb;
-            float rad = (data.g * 2.0);
-            float rpd = (data.b * 2.0 - 1.0);
-            rad += rpd * unif_dt;
-
-            float len = data.r + (sin(data.b + rpd * unif_dt) + 1.0) * 0.5;
-
-            retcolor = vec4(len, fract(rad * 0.5 + 1.0), data.b, 1.0);
-          }
-          gl_FragColor = retcolor;
-        }
-        `,
-        vertexShader : `
-        varying vec2 vtex;
-        void main(void) {
-          vtex = uv;
-          gl_Position = vec4(position, 1.0);
-        }
-        `
-      })
-    );
-    this.infoMesh = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-      new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-      new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshBasicMaterial */]({map : this.tempTexture.texture})
-    );
-
-    this.tempScene.add(this.tempMesh);
-    this.infoScene.add(this.infoMesh);
-
-    this.rebuild();
-  }
-
-  rebuild() {
-    this.uniforms.unif_isinit.value = 0.0;
-    this.uniforms.unif_seed.value = Math.random();
-    this.rdrr.render(this.tempScene, this.commonCamera, this.tempTexture);
-    this.rdrr.render(this.infoScene, this.commonCamera, this.infoTexture);
-  }
-
-  update(dt) {
-    this.uniforms.unif_dt.value = dt;
-    this.uniforms.unif_isinit.value = 1.0;
-    this.rdrr.render(this.tempScene, this.commonCamera, this.tempTexture);
-    this.rdrr.render(this.infoScene, this.commonCamera, this.infoTexture);
-
-  }
-
-  getWidth() { return this.width; }
-  getHeight() { return this.height; }
-  getTexture() { return this.infoTexture.texture; }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Grid);
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
-
-
-class Flow {
-  constructor(rdrr, width, height, grid) {
-    this.width = width == undefined ? 128 : width;
-    this.height = height == undefined ? 128 : height;
-
-    this.rdrr = rdrr;
-
-
-    this.texture = new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](this.width, this.height, {
-      minFilter : __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-      magFilter : __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-      data : __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */] 
-    });
-
-    this.camera = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Camera */]();
-    this.scene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-
-    this.scene.add(new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-      new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-      new __WEBPACK_IMPORTED_MODULE_0_three__["l" /* ShaderMaterial */]({
-        uniforms : {
-          unif_texture : { type : "t", value : grid.getTexture()},
-          unif_resolution : { type : "2f", value : [ grid.getWidth(), grid.getHeight()] }
-        },
-        fragmentShader : `
-        #define PI ` + Math.PI + `
-        uniform sampler2D unif_texture;
-        uniform vec2 unif_resolution;
-
-        varying vec2 vtex;
-
-        void main() {
-
-          vec2 st00 = vec2(floor(vtex.x * unif_resolution.x), floor(vtex.y * unif_resolution.y)) / unif_resolution;
-          vec2 st11 = vec2(ceil(vtex.x * unif_resolution.x), ceil(vtex.y * unif_resolution.y)) / unif_resolution;
-
-          vec4 data00 = texture2D(unif_texture, vec2(st00.x, st00.y));
-          vec4 data10 = texture2D(unif_texture, vec2(st11.x, st00.y));
-          vec4 data01 = texture2D(unif_texture, vec2(st00.x, st11.y));
-          vec4 data11 = texture2D(unif_texture, vec2(st11.x, st11.y));
-
-          vec2 grid00 = vec2(
-            data00.x * sin(data00.y * 2.0 * PI),
-            data00.x * cos(data00.y * 2.0 * PI)
-          );
-          vec2 grid10 = vec2(
-            data10.x * sin(data10.y * 2.0 * PI),
-            data10.x * cos(data10.y * 2.0 * PI)
-          );
-          vec2 grid01 = vec2(
-            data01.x * sin(data01.y * 2.0 * PI),
-            data01.x * cos(data01.y * 2.0 * PI)
-          );
-          vec2 grid11 = vec2(
-            data11.x * sin(data11.y * 2.0 * PI),
-            data11.x * cos(data11.y * 2.0 * PI)
-          );
-          vec2 grid = (vtex * unif_resolution - floor(vtex * unif_resolution));
-          vec2 pick00 = vec2( 0.0 + grid.x , 0.0 + grid.y);
-          vec2 pick10 = vec2(-1.0 + grid.x , 0.0 + grid.y);
-          vec2 pick01 = vec2( 0.0 + grid.x ,-1.0 + grid.y);
-          vec2 pick11 = vec2(-1.0 + grid.x ,-1.0 + grid.y);
-
-          float a0 = dot(grid00, pick00);
-          float a1 = dot(grid10, pick10);
-          float a2 = dot(grid01, pick01);
-          float a3 = dot(grid11, pick11);
-
-          float A0 = a0 + smoothstep(0.0, 1.0, grid.x) * ( a1 - a0);
-          float A1 = a2 + smoothstep(0.0, 1.0, grid.x) * ( a3 - a2);
-
-          float A2 = A0 + smoothstep(0.0, 1.0, grid.y) * ( A1 - A0);
-
-
-          gl_FragColor = vec4(vec3(A2 * 0.5 + 0.5), 1.0);
-        }
-        `,
-        vertexShader : `
-        varying vec2 vtex;
-        void main() {
-          vtex = uv;
-          gl_Position = vec4(position, 1.0);
-        }
-        `
-      })
-    ));
-  }
-
-  update(dt) {
-    this.rdrr.render(this.scene, this.camera, this.texture);
-  }
-
-  getTexture() { return this.texture.texture; }
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (Flow);
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(2);
 
 // import Perlin from "./../perlin/perlin.js"
 
 //bursh fragment Shader
 const fragmentShader = `
-uniform sampler2D uPerlin;
-uniform vec3 uColor;
-uniform float uAlpha;
-uniform float uClamp;
-uniform float uTime;
-
 varying vec2 vtex;
-
-
-const float cEdge = 0.1;
-float EdgeClamper(vec2 st) {
-    return
-        //// Circle (MOON)
-        smoothstep(1.0, 1.0 - cEdge, length(st + vec2(0.0, 0.0) - 0.5) * 2.0);
-        // * smoothstep(1.0 - cEdge, 1.0, length(st + vec2(0.2, 0.0) - 0.5) * 2.0);
-        //// Square
-        // smoothstep(0.0, 0.0 + cEdge, st.x) *
-        // smoothstep(1.0, 1.0 - cEdge, st.x) *
-        // smoothstep(0.0, 0.0 + cEdge, st.y) *
-        // smoothstep(1.0, 1.0 - cEdge, st.y);
-}
+varying float vdepth;
 
 void main(void) {
-    float alpha = uAlpha * EdgeClamper(vtex);
-    alpha = smoothstep(uClamp - 0.1, uClamp + 0.1, alpha);
-    gl_FragColor = vec4(uColor, alpha);
+    vec3 bgcol = vec3(1.0, 1.0, 1.0);
+    vec3 obcol = vec3(0.0, 0.0, 0.0);
+
+    float depth = smoothstep(60.0, 30.0,  vdepth); 
+    vec3 retcol = mix(bgcol, obcol, depth);
+
+    gl_FragColor = vec4(retcol, 1.0);
 }
 
 `;
@@ -44696,300 +44285,135 @@ void main(void) {
 const vertexShader = `
 
 varying vec2 vtex;
+varying float vdepth;
 
 void main(void) {
+    vec4 retpos = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
     vtex = uv;
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+    vdepth = retpos.z;//smoothstep(100.0, 200.0, retpos.z);
+
+    gl_Position =  projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 }
 `;
 
 
-class Brush extends __WEBPACK_IMPORTED_MODULE_0_three__["g" /* Object3D */]{
-    constructor(pos, rdrr, perlin) {
+/* harmony default export */ __webpack_exports__["a"] = (class extends __WEBPACK_IMPORTED_MODULE_0_three__["c" /* Object3D */] {
+    constructor() {
         super();
-        //intialization renderer
-        this.rdrr = rdrr;
-
-        //intialization about perlin noise
-        // this.perlin = new Perlin({ rdrr : rdrr, width : 16, height : 16});
-
-        
-        this.color = [
-            Math.random() * 0.5 + 0.5, 
-            Math.random() * 0.5 + 0.5, 
-            Math.random() * 0.5 + 0.5
-        ];
-
-        this.uColor = [0.5, 0.5, 0.5,]
-
-        //initailization about uniforms
-        this.uniforms = {
-            uPerlin : { type : "t", value : perlin.texture},
-            uColor : { type : "3f", value : this.uColor},
-            uTime : { type : "1f", value : 0.0},
-            uClamp : { type : "1f", value : 0.7},
-            uAlpha : { type : "1f", value : 1.0}
-        };
-        
-        //setup mesh 
-        this.add(new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-            new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-            new __WEBPACK_IMPORTED_MODULE_0_three__["l" /* ShaderMaterial */]({
-                uniforms : this.uniforms,
-                transparent : true,
-                vertexShader : vertexShader,
-                fragmentShader : fragmentShader
+        //Setup body
+        this.body = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Mesh */](
+            new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* PlaneGeometry */](2.0, 2.0),
+            new __WEBPACK_IMPORTED_MODULE_0_three__["g" /* ShaderMaterial */]({
+                transparent: true,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
             })
-        ));
+        );
 
-        this._scale = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* Vector3 */](0.0);
-        this.scale.x = 0.001;
-        this.scale.y = 0.001;
+        //setup Shadow
+        this.shadow = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Mesh */](
+            new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* PlaneGeometry */](2.0, 2.0),
+            new __WEBPACK_IMPORTED_MODULE_0_three__["g" /* ShaderMaterial */]({
+                transparent: true,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
+            })
+        );
 
-        this._position = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* Vector3 */](pos.x, pos.y, 0.0);
-        this.position.x = pos.x;
-        this.position.y = pos.y;
-        this.position.z = 0.0;
-
-        this._velocity = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* Vector3 */](0.0);
-        this._rotation = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* Vector3 */](0.0);
+        //setup mesh 
+        this.add(this.body);
+        this.add(this.shadow);
 
 
-        const len = 0.0;//Math.random() * 5.0 + 1.0;
-        const rad = 0.0;//Math.random() * 2.0 * Math.PI;
 
-        this.rotation.z = Math.random() * Math.PI * 2.0;
+        //setup default matrices
 
-        this.uniforms.uClamp.value = Math.random() * 0.5 + 0.25;
+        //create pivot
+        this.pivot = 0.0;
 
-        this._seed = { 
-            clp : Math.random() + 1.0,
-            scl : 0.5 + Math.random() * 0.2, 
-            xpiv : pos.x + len * Math.sin(rad), ypiv : pos.y + len * Math.cos(rad),
-            xscl : 10.5, xlamb : Math.random(), xfreq : 0.5 + Math.random(),
-            yscl : 10.5, ylamb : Math.random(), yfreq : 0.5 + Math.random() 
-        };
+        //create localposition
+        this.localPosition = new __WEBPACK_IMPORTED_MODULE_0_three__["h" /* Vector3 */](
+            Math.random() * 100.0 - 50.0,
+            0.0,
+            Math.random() * 100.0 - 80.0);
+
+        //init scale
+        this.scale.x = 0.5;
+        this.scale.y = 2.0;
+
+        this.looker = new __WEBPACK_IMPORTED_MODULE_0_three__["h" /* Vector3 */](0.0, 0.0, 0.0);
     }
 
-    update(t, dt, fft) {
-        if(dt > 0.1) dt = 0.0;
-        // this.perlin.update(dt);
-        // console.log(fft);
-        this._position.x = this._seed.xpiv + (fft * 3.0) * Math.sin(this._seed.xlamb + this._seed.xfreq * t * Math.PI);
-        this._position.y = (this._seed.ypiv + fft) + (fft * 3.0) * Math.cos(this._seed.ylamb + this._seed.yfreq * t * Math.PI);
+    update(t, dt, cam) {
+        if (dt > 0.1) dt = 0.0;
 
-        this._scale.x = this._seed.scl * fft * fft + Math.random() * 0.2;
-        this._scale.y = this._seed.scl * fft * fft + Math.random() * 0.2;
+        this.pivot += dt;
 
-        this._rotation.z = Math.random() * Math.PI * 4.0;
+        if (this.localPosition.z + this.pivot > 20.0) this.pivot -= 70.0;
 
+        this.looker.x = (cam.position.x + this.position.x);
+        this.looker.y = (cam.position.y);
+        this.looker.z = (cam.position.z + this.position.z);
 
-        this.position.x += (this._position.x - this.position.x) * dt * 5.0;
-        this.position.y += (this._position.y - this.position.y) * dt * 5.0;
+        this.lookAt(this.looker);
 
-        this.scale.x += (this._scale.x - this.scale.x) * dt * 5.0;
-        this.scale.y += (this._scale.y - this.scale.y) * dt * 5.0;
+        this.position.x = this.localPosition.x;
+        this.position.y = this.localPosition.y;
+        this.position.z = this.localPosition.z + this.pivot;
 
-        this.rotation.z += (this._rotation.z - this.rotation.z) * dt * 1.0;
-
-        this.uColor[0] += (this.color[0] + fft - this.uColor[0]) * dt * 5.0;
-        this.uColor[1] += (this.color[1] + fft - this.uColor[1]) * dt * 5.0;
-        this.uColor[2] += (this.color[2] + fft - this.uColor[2]) * dt * 5.0;
-        
-        this.uniforms.uTime.value += dt;
-        this.uniforms.uClamp.value = 0.2 + 0.8 * fft;//Math.sin(t * Math.PI * this._seed.clp) * 0.2 + ;
-        // this.uniforms.uAlpha.value = 
     }
 
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Brush;
-;
+});;
 
 /***/ }),
-/* 8 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(2);
 
 
-
-//setup Shader programs
-const fragmentShader = `
-#define PI ` + Math.PI + `
-uniform sampler2D uPerlinTexture;
-uniform sampler2D uCurrTexture;
-uniform sampler2D uPrevTexture;
-uniform vec2 uResolution;
-uniform float uDelta;
-varying vec2 vtex;
+/* harmony default export */ __webpack_exports__["a"] = (class extends __WEBPACK_IMPORTED_MODULE_0_three__["d" /* PerspectiveCamera */] {
+    constructor() {
+        super(45, window.innerWidth / window.innerHeight, 1.0, 500.0);
+        this.position.z = 20.0;
+        this.position.y = 8.0;
 
 
-vec4 blur(vec2 st, vec2 ns) {
-    vec3 offset = vec3(1.0, 0.0, -1.0);
-    vec4 retcol = vec4(0.0);
-    float ap = 0.01;
-    
-    retcol += texture2D(uPrevTexture, st) * 4.0 ;
-    ap = max(ap, retcol.a);
-    
-    retcol += 
-        texture2D(uPrevTexture, st + offset.xx / uResolution * ns / ap) * 1.0 + 
-        texture2D(uPrevTexture, st + offset.zz / uResolution * ns / ap) * 1.0 + 
-        texture2D(uPrevTexture, st + offset.xz / uResolution * ns / ap) * 1.0 + 
-        texture2D(uPrevTexture, st + offset.zx / uResolution * ns / ap) * 1.0;
-    retcol += 
-        texture2D(uPrevTexture, st + offset.xy / uResolution * ns / ap) * 2.0 + 
-        texture2D(uPrevTexture, st + offset.zy / uResolution * ns / ap) * 2.0 + 
-        texture2D(uPrevTexture, st + offset.yz / uResolution * ns / ap) * 2.0 + 
-        texture2D(uPrevTexture, st + offset.yx / uResolution * ns / ap) * 2.0;
-
-    return retcol / 16.0;
-}
-
-float glow(vec2 st) {
-    return smoothstep(
-        length(vec3(0.9)), 
-        length(vec3(1.0)), 
-        length(texture2D(uCurrTexture, st).rgb));
-}
-float glowblur(vec2 st) {
-    float retcol = 0.0;
-    float rate = 0.0;
-    for(float idx = 1.0; idx <= 32.0 ; idx += 1.0) {
-        float rt = 8.0 / idx;
-        retcol += glow(st - vec2(0.5 + idx * 4.0, 0.0) / uResolution) * rt;
-        retcol += glow(st + vec2(0.5 + idx * 4.0, 0.0) / uResolution) * rt;
-        rate += rt * 2.0;
     }
-    return retcol / rate;
-}
 
-void main(void) {
-    vec4 perlin = texture2D(uPerlinTexture, vtex);
-    vec2 noisSt = perlin.x * 8.0 * vec2(
-        sin(perlin.y * PI * 2.0),
-        cos(perlin.y * PI * 2.0)) ;
+    update(t, dt) {
+     
+        this.position.y = Math.sin(t) * 2.0 + 6.0;
+        this.lookAt(new __WEBPACK_IMPORTED_MODULE_0_three__["h" /* Vector3 */](0.0, 0.0, 0.0));
+        this.updateMatrix();
+    }
+});
 
-    vec2 prevSt = vec2(vtex.x, vtex.y + uDelta) ;
-    vec2 currSt = vtex;
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-    vec4 prevColor = blur(prevSt , noisSt);
-    prevColor.a *= 1.0 - uDelta;
-    
-    vec4 currColor = texture2D(uCurrTexture, currSt);
-    
-    vec4 retColor = max(prevColor, currColor); 
-    // retColor = mix(retColor, vec4(1.0), glowblur(vtex));
-    gl_FragColor = retColor;
-}
-`;
-
-const vertexShader = `
-varying vec2 vtex;
-void main(void) {
-    vtex = uv;
-    gl_Position = vec4(position, 1.0);
-}
-`;
-
-class Canvas {
-    constructor(rdrr, perlin) {
-        //setup render target for current scene visual
-        this.scn = new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](window.innerWidth, window.innerHeight, {
-            minFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            type: __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-        });
-
-        //setup render target
-        this.rtt = [];
-        this.rtt.push(new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](window.innerWidth, window.innerHeight, {
-            minFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            type: __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-        }));
-        this.rtt.push(new __WEBPACK_IMPORTED_MODULE_0_three__["n" /* WebGLRenderTarget */](window.innerWidth, window.innerHeight, {
-            minFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["c" /* LinearFilter */],
-            type: __WEBPACK_IMPORTED_MODULE_0_three__["b" /* FloatType */]
-        }));
-
-        //initialization rendertarget idx;
-        this.rttidx = 0;
-
-        //setup render environment       
-        this.scene = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-        this.rencn = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* Scene */]();
-
-        this.camera = new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Camera */]();
-        this.rdrr = rdrr;
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(2);
 
 
-        //setup uniforms (Shader)
-        this.uniforms = {
-            uPerlinTexture : { type : "t", value : perlin.texture},
-            uCurrTexture : {type : "t", value : undefined},
-            uPrevTexture : {type : "t", value : undefined},
-            uResolution : { type : "2f", value : [window.innerWidth, window.innerHeight]},
-            uDelta : { type : "1f", value : 0.0 }
-        };
-
-        //setup mesh
-        this.scene.add(new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-            new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-            new __WEBPACK_IMPORTED_MODULE_0_three__["l" /* ShaderMaterial */]({
-                uniforms: this.uniforms,
-                // transparent : true,  
-                vertexShader : vertexShader,
-                fragmentShader : fragmentShader,
-            })
+/* harmony default export */ __webpack_exports__["a"] = (class extends __WEBPACK_IMPORTED_MODULE_0_three__["c" /* Object3D */] {
+    constructor(){
+        super();
+        this.add(new __WEBPACK_IMPORTED_MODULE_0_three__["a" /* Mesh */](
+            new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* PlaneGeometry */](2.0, 2.0),
+            new __WEBPACK_IMPORTED_MODULE_0_three__["b" /* MeshBasicMaterial */]({color : "white"})
         ));
-
-        this.rencn.add(new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](
-            new __WEBPACK_IMPORTED_MODULE_0_three__["i" /* PlaneGeometry */](2.0, 2.0),
-            new __WEBPACK_IMPORTED_MODULE_0_three__["l" /* ShaderMaterial */]({
-                uniforms: this.uniforms,
-                transparent : true,  
-                vertexShader : vertexShader,
-                fragmentShader : fragmentShader,
-            })
-        ));
+        this.rotation.x = -Math.PI * 0.5;
+        this.scale.x = 100.0;
+        this.scale.y = 100.0;
     }
 
-    update(dt) {
-        //if it's rendered  target //
-        this.uniforms.uDelta.value = dt * 0.08;
+    update(t, dt) {
+
     }
-
-    render(scene, camera) {
-        
-        //create curr texture
-        this.rdrr.render(scene, camera, this.scn);
-        
-        this.uniforms.uCurrTexture.value = this.scn.texture;
-        this.uniforms.uPrevTexture.value = this.texture;
-
-
-        this.swap();
-
-        //save mixed texture curr & prev
-        this.rdrr.render(this.scene, this.camera, this.target);
-
-        //render mixed texture curr & prev
-        this.rdrr.render(this.rencn, this.camera);
-    }
-
-    swap() { this.rttidx = this.previdx; }
-
-    get curridx() { return this.rttidx; }
-    get previdx() { return (this.rttidx + 1) % 2; }
-
-    get target() { return this.rtt[this.curridx]; }
-    get texture() { return this.rtt[this.curridx].texture; }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Canvas;
-
+});
 
 /***/ })
 /******/ ]);
