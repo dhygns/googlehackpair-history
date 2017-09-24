@@ -47,19 +47,8 @@ export default class extends THREE.Object3D {
             })
         );
 
-        //setup Shadow
-        this.shadow = new THREE.Mesh(
-            new THREE.PlaneGeometry(2.0, 2.0),
-            new THREE.ShaderMaterial({
-                transparent: true,
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader
-            })
-        );
-
         //setup mesh 
         this.add(this.body);
-        this.add(this.shadow);
 
 
 
@@ -75,7 +64,7 @@ export default class extends THREE.Object3D {
             Math.random() * 100.0 - 80.0);
 
         //init scale
-        this.scale.x = 0.5;
+        this.scale.x = 2.0;
         this.scale.y = 2.0;
 
         this.looker = new THREE.Vector3(0.0, 0.0, 0.0);

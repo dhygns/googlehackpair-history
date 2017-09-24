@@ -1,7 +1,9 @@
 import * as THREE from "three"
-import Person from "./visual/person.js"
+import Frame from "./visual/frame.js"
 import Camera from "./visual/camera.js"
-import Ground from "./visual/ground.js"
+
+import Atlas from "./atlas/atlas.js"
+import Resource from "./manager/resource.js"
 class Visual {
     constructor() {
         //Setup Size for render
@@ -12,20 +14,32 @@ class Visual {
         this.rdrr.setSize(this.resolution.width, this.resolution.height);
         document.body.appendChild(this.rdrr.domElement);
 
+        //Setup Manager For Resources
+        this.manager = new THREE.LoadingManager();
+
         //Setup Camera for visual
         this.camera = new Camera();
 
         //Setup Scene for visual
         this.scene = new THREE.Scene();
 
-        //Setup Scene objects
-        for(var i = 0 ; i < 200; i++) {
-            const person = new Person();
-            this.scene.add(person);
+        //Setup Altas for history
+        this.atlas = new Atlas(this.rdrr, this.manager);
 
+        //Setup ImageLoader
+        this.image = new THREE.TextureLoader(this.manager);
+
+        //Setup Resources
+        this.resource = new Resource(this.manager);
+
+        this.manager.onLoad = () => {
+            //Setup Scene objects
+            for(var i = 0 ; i < 200; i++) {
+                const person = new Frame();
+                this.scene.add(person);
+    
+            }
         }
-        this.scene.add(new Ground());
-        
     }   
 
     update(t, dt) {

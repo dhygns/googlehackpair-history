@@ -1,0 +1,5 @@
+{
+    "images" : [
+        { "file" : "dummy.jpg", "left" : 0.0, "top" : 0.0, "width" : 0.1, "height" : 0.1, "time" : 8.5 }
+    ]
+}
