@@ -3,14 +3,15 @@ import * as THREE from "three"
 
 //bursh fragment Shader
 const fragmentShader = `
+uniform sampler2D uTexture;
 varying vec2 vtex;
 varying float vdepth;
 
 void main(void) {
-    vec3 bgcol = vec3(1.0, 1.0, 1.0);
-    vec3 obcol = vec3(0.0, 0.0, 0.0);
+    vec3 bgcol = vec3(0.0, 0.0, 0.0);
+    vec3 obcol = texture2D(uTexture, vtex).rgb;
 
-    float depth = smoothstep(60.0, 30.0,  vdepth); 
+    float depth = smoothstep(50.0, 0.0,  vdepth); 
     vec3 retcol = mix(bgcol, obcol, depth);
 
     gl_FragColor = vec4(retcol, 1.0);
@@ -35,13 +36,20 @@ void main(void) {
 
 
 export default class extends THREE.Object3D {
-    constructor() {
+    constructor(image) {
         super();
+
+        //Setup Uniform
+        this.unif = {
+            uTexture : { type : "t", value : image}
+        };
+
         //Setup body
         this.body = new THREE.Mesh(
             new THREE.PlaneGeometry(2.0, 2.0),
             new THREE.ShaderMaterial({
-                transparent: true,
+                transparent: true, 
+                uniforms: this.unif,
                 vertexShader: vertexShader,
                 fragmentShader: fragmentShader
             })
@@ -50,22 +58,18 @@ export default class extends THREE.Object3D {
         //setup mesh 
         this.add(this.body);
 
-
-
-        //setup default matrices
-
         //create pivot
         this.pivot = 0.0;
 
-        //create localposition
-        this.localPosition = new THREE.Vector3(
-            Math.random() * 100.0 - 50.0,
-            0.0,
-            Math.random() * 100.0 - 80.0);
-
         //init scale
         this.scale.x = 2.0;
-        this.scale.y = 2.0;
+        this.scale.y = this.scale.x * image.image.height / image.image.width;
+
+        //create localposition
+        this.localPosition = new THREE.Vector3(
+            Math.random() * 20.0 - 10.0,
+            this.scale.y - 1.0,
+            Math.random() * 40.0 - 20.0);
 
         this.looker = new THREE.Vector3(0.0, 0.0, 0.0);
     }
@@ -73,9 +77,9 @@ export default class extends THREE.Object3D {
     update(t, dt, cam) {
         if (dt > 0.1) dt = 0.0;
 
-        this.pivot += dt;
+        this.pivot -= dt * 0.1;
 
-        if (this.localPosition.z + this.pivot > 20.0) this.pivot -= 70.0;
+        if (this.localPosition.z + this.pivot < -20.0) this.pivot += 40.0;
 
         this.looker.x = (cam.position.x + this.position.x);
         this.looker.y = (cam.position.y);

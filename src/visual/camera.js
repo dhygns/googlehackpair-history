@@ -11,7 +11,7 @@ export default class extends THREE.PerspectiveCamera {
 
     update(t, dt) {
      
-        this.position.y = Math.sin(t) * 2.0 + 6.0;
+        this.position.y = 6.0;
         this.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
         this.updateMatrix();
     }
