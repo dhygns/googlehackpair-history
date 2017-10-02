@@ -21,7 +21,7 @@ class Visual {
         this.scene = new THREE.Scene();
 
         //Setup Altas for history
-        this.atlas = new Atlas(this.rdrrs);
+        this.atlas = new Atlas(this.rdrr);
 
         //Setup ImageLoader
         this.loader = new THREE.TextureLoader();
@@ -53,48 +53,27 @@ class Visual {
         //Count of Resources Objects
         const objectCount = Object.keys(this.resources).length;
 
-        // console.log(objectCount, config.length);
+        console.log(objectCount, config.length);
 
         for(var idx = objectCount; idx < config.length ; idx++) {
             const {originName} = config[idx];
-            const URLPath = "http://172.20.10.9:5000/" + originName;
+            const URLPath = originName;
 
             this.loader.crossOrigin = '';
             this.loader.load(URLPath, ((name, tex) => {
                 tex.minFilter = tex.magFilter = THREE.LinearFilter;
+                
                 console.log(name, tex);
                 this.resources[name] = tex;
+                
+                ;
 
-                const frame = new Frame(tex);
+                const frame = new Frame(
+                    this.atlas.texture,
+                    this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex)
+                );
                 this.scene.add(frame);
             }).bind(this, originName))
-
-            // const img = new Image(); img.src = URLPath; 
-            // img.onload = ((name) => {
-            //     img.setAttribute('crossorigin', '')
-            //     const canvas = document.createElement('canvas');
-            //     canvas.width = img.width;
-            //     canvas.height = img.height;
-                
-            //     const context = canvas.getContext('2d')
-            //     context.drawImage(img, 0, 0);
-            //     const imageData = context.getImageData(0, 0, img.width, img.height);
-            //     console.log(imageData);
-            //     document.body.appendChild(canvas);
-
-            //     const tex = new THREE.Texture(canvas);
-            //     tex.needsUpdate = true; 
-            //     tex.magFilter = tex.minFilter = THREE.LinearFilter;
-                
-            //     this.resources[name] = tex;
-
-            //     console.log(this.resources);
-
-            //     const person = new Frame(tex);
-            //     this.scene.add(person);
-
-            //     console.log(person);
-            // }). bind(this, originName);
         }
     }
 }

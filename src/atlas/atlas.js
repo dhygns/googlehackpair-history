@@ -79,10 +79,10 @@ class Stemp extends THREE.Object3D {
     setImageInfo(left, top, width, height, texture) {
         this.unif.uTexture.value = texture;
         
-        this.vertices[0].set(-1.0 + left, -1.0 + top, 0.0 );
-        this.vertices[1].set(-1.0 + left, -1.0 + top + height, 0.0 );
-        this.vertices[2].set(-1.0 + left + width, -1.0 + top, 0.0 );
-        this.vertices[3].set(-1.0 + left + width, -1.0 + top + height, 0.0 );
+        this.vertices[0].set(-1.0 + left * 2.0, -1.0 + top * 2.0, 0.0 );
+        this.vertices[1].set(-1.0 + left * 2.0, -1.0 + top * 2.0 + height * 2.0, 0.0 );
+        this.vertices[2].set(-1.0 + left * 2.0 + width * 2.0, -1.0 + top * 2.0, 0.0 );
+        this.vertices[3].set(-1.0 + left * 2.0 + width * 2.0, -1.0 + top * 2.0 + height * 2.0, 0.0 );
 
 
         //update vertices attributes
@@ -119,14 +119,12 @@ export default class {
     constructor(rdrr) {
         this.rdrr = rdrr;
 
-        //this. 
-        this.data = null;
-
-        // this.loader = new THREE.FileLoader(manager);
-        // this.loader.load("res/history.json", (data) => {
-        //     this.data = JSON.parse(data);
-        //     console.log(this.data);
-        // });
+        this.width = 8192;
+        this.height = 8192;
+        this.maxheight = 0.0;
+        
+        this.left = 0.0;
+        this.top = 0.0;
 
         //Methods for Stemping
         this.stemp = new Stemp();
@@ -136,27 +134,39 @@ export default class {
 
 
         //Atlas Texture
-        this.texture = new THREE.WebGLRenderTarget(2048, 2048, {minFilter, magFilter});
+        this.target = new THREE.WebGLRenderTarget(this.width, this.height, {minFilter, magFilter});
 
-        this.left = 0.0;
-        this.top = 0.0;
     }
 
 
 
-    addTextureToAtlas(texture) {
-        if(this.data == null) {
-            console.warn("WARNNING! history data is NULL");
-        }
-        else {
-            this.left += 0.1;
-            this.top += 0.1 * Math.floor(this.left);
-            this.left = this.left - Math.floor(this.left);
+    addTextureToAtlas(width, height, texture) {
 
-            this.stemp.setImageInfo(this.left, this.top, 0.1, 0.1, texture);
-            this.rdrr.autoClear = false;
-            this.rdrr.render(this.canvas, this.viewer, this.texture);
-            this.rdrr.autoClear = true;
-        }
+        const resolution = 0.1;
+
+        var retobj = { left : 0.0, top : 0.0, width : 0.0, height : 0.0};
+
+        const w = width / this.width * resolution;
+        const h = height / this.height * resolution;
+
+        if(this.left + w > 1.0) { this.left = 0.0; this.top += Math.max(this.maxheight, h); }
+
+        retobj.left = this.left;
+        retobj.top = this.top;
+        retobj.width = w;
+        retobj.height = h;
+
+        this.stemp.setImageInfo(this.left, this.top, w, h, texture);
+
+        this.left += w;
+        this.maxheight = Math.max(this.maxheight, h);
+    
+        this.rdrr.autoClear = false;
+        this.rdrr.render(this.canvas, this.viewer, this.target);
+        this.rdrr.autoClear = true;
+
+        return retobj;
     }
+
+    get texture() { return this.target.texture; }
 }
