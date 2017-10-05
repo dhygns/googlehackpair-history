@@ -142,7 +142,7 @@ export default class {
 
     addTextureToAtlas(width, height, texture) {
 
-        const resolution = 0.1;
+        const resolution = 0.25;
 
         var retobj = { left : 0.0, top : 0.0, width : 0.0, height : 0.0};
 

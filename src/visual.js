@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import Frame from "./visual/frame.js"
+import Canvas from "./visual/canvas.js"
 import Camera from "./visual/camera.js"
 
 import Atlas from "./atlas/atlas.js"
@@ -10,7 +11,7 @@ class Visual {
         this.resolution = {width : window.innerWidth, height : window.innerHeight};
 
         //Setup Renderer
-        this.rdrr = new THREE.WebGLRenderer({ alpha: false, antialias: true });
+        this.rdrr = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         this.rdrr.setSize(this.resolution.width, this.resolution.height);
         document.body.appendChild(this.rdrr.domElement);
 
@@ -19,6 +20,10 @@ class Visual {
 
         //Setup Scene for visual
         this.scene = new THREE.Scene();
+
+        //Setup Canvas for visual
+        this.canvas = new Canvas();
+        this.scene.add(this.canvas);
 
         //Setup Altas for history
         this.atlas = new Atlas(this.rdrr);
@@ -66,13 +71,16 @@ class Visual {
                 console.log(name, tex);
                 this.resources[name] = tex;
                 
-                ;
+                
 
                 const frame = new Frame(
                     this.atlas.texture,
                     this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex)
                 );
                 this.scene.add(frame);
+
+                this.canvas.doAction(tex, tex, tex, 5.0);
+                this.camera.doAction(5.0);
             }).bind(this, originName))
         }
     }

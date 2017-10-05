@@ -9,15 +9,19 @@ varying vec2 vtex;
 varying float vdepth;
 
 void main(void) {
-    vec2 uv = uOffset.xy + vtex * uOffset.zw;
+    vec2 st = vtex * 2.0 - 1.0;
+    vec2 uv = uOffset.xy + uOffset.zw * 0.04 + vtex * uOffset.zw * 0.96;
 
-    vec3 bgcol = vec3(0.0, 0.0, 0.0);
+    float alpha =
+        smoothstep(1.0, 0.9, abs(st.x)) * smoothstep(1.0, 0.9, abs(st.y));
+
+    vec3 bgcol = vec3(1.0, 1.0, 1.0);
     vec3 obcol = texture2D(uTexture, uv).rgb;
 
-    float depth = 1.0;//smoothstep(50.0, 0.0,  vdepth); 
+    float depth =smoothstep(30.0, 10.0,  vdepth); 
     vec3 retcol = mix(bgcol, obcol, depth);
 
-    gl_FragColor = vec4(retcol, 1.0);
+    gl_FragColor = vec4(retcol, alpha);
 }
 
 `;
@@ -75,8 +79,8 @@ export default class extends THREE.Object3D {
 
         //create localposition
         this.localPosition = new THREE.Vector3(
-            Math.random() * 20.0 - 10.0, 0.0,
-            Math.random() * 40.0 - 20.0);
+            Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0), 0.0,
+            20.0);
 
         this.looker = new THREE.Vector3(0.0, 0.0, 0.0);
     }
@@ -84,7 +88,7 @@ export default class extends THREE.Object3D {
     update(t, dt, cam) {
         if (dt > 0.1) dt = 0.0;
 
-        this.pivot -= dt * 0.1;
+        this.pivot -= dt * 0.6;
 
         if (this.localPosition.z + this.pivot < -20.0) this.pivot += 40.0;
 
