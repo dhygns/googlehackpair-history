@@ -36,10 +36,22 @@ class Visual {
         this.resource = new Resource();
         
         //Setup Scene objects
-        // for(var i = 0 ; i < 50; i++) {
-        //     // const image = undefined;//this.resources["dummy0" + Math.round(Math.random() * 5.0)];
+        this.frameIdx = 0;
+        this.frames = [];
+        for(var i = 0 ; i < 50; i++) {
+            const frame = new Frame(this.atlas.texture, i);
+            this.frames.push(frame);
+            this.scene.add(frame)
+        }
 
-        // }
+
+        //UI MODE & View Mode Swticher
+        document.addEventListener("keydown", ({key})=>{
+            switch(key) {
+                case "1": for(var i = 0; i < 50 ; i++) { this.frames[i].SetViewMode(); } break;
+                case "2": for(var i = 0; i < 50 ; i++) { this.frames[i].SetUIMode(); } break;
+            }
+        });
     }   
 
     update(t, dt) {
@@ -71,16 +83,14 @@ class Visual {
                 console.log(name, tex);
                 this.resources[name] = tex;
                 
-                
+                const infos = this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex);
+                this.frames[this.frameIdx].Start(infos);
 
-                const frame = new Frame(
-                    this.atlas.texture,
-                    this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex)
-                );
-                this.scene.add(frame);
+                this.frameIdx = (this.frameIdx + 1) % 50;
 
                 this.canvas.doAction(tex, tex, tex, 5.0);
                 this.camera.doAction(5.0);
+
             }).bind(this, originName))
         }
     }

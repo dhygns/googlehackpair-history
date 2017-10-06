@@ -19,7 +19,7 @@ export default class extends THREE.PerspectiveCamera {
 
     _updateDoAction(t, dt) {
         this.position.z += (10.0 - this.position.z) * dt * 5.0;
-        this.position.y += (5.0 - this.position.y) * dt * 15.0;
+        this.position.y += (5.0 - this.position.y) * dt * 3.0;
 
         this.timer -= dt;
         if(this.timer < 0.0) this.noAction();

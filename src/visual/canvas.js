@@ -16,7 +16,7 @@ void main(void) {
     ResultColor = mix(ResultColor, StyledColor, smoothstep(0.63, 0.66, vtex.x));
 
 
-    float alpha = smoothstep(1.0, 0.9, abs(st.x)) * smoothstep(1.0, 0.9, abs(st.y));
+    float alpha = smoothstep(0.99, 0.89, abs(st.x)) * smoothstep(0.99, 0.89, abs(st.y));
     ResultColor.a = alpha;
 
     gl_FragColor = ResultColor;
@@ -112,7 +112,7 @@ export default class extends THREE.Object3D {
 
         this.scale.x = this.scale.y = 3.0;
         this.position.z = 5.0;
-        this.position.y = 2.0;
+        this.position.y = 2.5;
         this._updateTodo = (t, dt) => {};
     }
 
@@ -193,7 +193,8 @@ export default class extends THREE.Object3D {
         this.geom.attributes.position.needsUpdate = true;
     }
 
-    update(t, dt) {
+    update(t, dt, cam) {
+        this.lookAt(cam.position);
         this._updateTodo(t, dt);
         this._updateVertices(t, dt);
     }

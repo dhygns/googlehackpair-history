@@ -13,6 +13,8 @@ export default class {
 
                 this.res = [];
 
+
+                //added Debug Event
                 document.addEventListener("keydown", ({key})=>{
                     if(key != " ") return;
                     this.res.push({

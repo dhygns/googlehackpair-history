@@ -1,7 +1,6 @@
 import Network from "./network/network.js"
 import Visual from "./visual.js"
 
-
 //Visual Effect
 (function() {
     this.network = new Network(this.action.bind(this));
