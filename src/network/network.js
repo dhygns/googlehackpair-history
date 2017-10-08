@@ -1,36 +1,49 @@
 import * as THREE from "three"
 import Socket from "socket.io-client"
-
-const SERVER_IP = "http://172.20.10.9:5000/visual";
+import Config from "./../config.js"
 
 export default class {
     constructor(callback) {
-        this.socket = Socket(SERVER_IP);
-        //send emit
-        switch (this.socket.disconnected) {
-            case true: {
-                console.warn("[SERVER CONNECTION FAILED] this project might be for debug or has ERROR. it will be worked by DEBUG MODE.");
-
-                this.res = [];
+        this.socket = Socket(this.IP + "/visual");
+        console.log(this.IP);
+        
+        this.socket.emit("get-history");
+        this.socket.on("current-history", callback);
 
 
-                //added Debug Event
-                document.addEventListener("keydown", ({key})=>{
-                    if(key != " ") return;
-                    this.res.push({
-                        originName : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
-                    });
-                    console.log("KEYDOWN");
-                    callback(JSON.stringify(this.res));
-                });
 
-            } break;
-            case false: {
-                console.log("[SERVER CONNECTED SUCCESSFULLY]");
+        // //send emit
+        // switch (this.socket.disconnected) {
+        //     case true: {
+        //         console.warn("[SERVER CONNECTION FAILED] this project might be for debug or has ERROR. it will be worked by DEBUG MODE.");
 
-                this.socket.emit("get-history");
-                this.socket.on("current-history", callback);
-            } break;
-        }
+        //         this.res = [];
+
+
+        //         //added Debug Event
+        //         document.addEventListener("keydown", ({key})=>{
+        //             if(key != " ") return;
+        //             this.res.push({
+        //                 originSrc : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+        //                 styleSrc : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+        //                 resultSrc : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+        //                 styleName : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+        //                 styleId :"./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+        //                 createdDate : "./res/images/dummy0" + Math.round(Math.random() * 6.0) + ".jpg",
+
+        //             });
+        //             console.log("KEYDOWN");
+        //             callback(JSON.stringify(this.res));
+        //         });
+
+        //     } break;
+        //     case false: {
+        //         console.log("[SERVER CONNECTED SUCCESSFULLY]");
+        //     } break;
+        // }
     }
+
+    req(str) { this.socket.emit("select-result-request", str); }
+
+    get IP() { return Config.SOCKET_HOST + ":" + Config.SOCKET_PORT; }
 }

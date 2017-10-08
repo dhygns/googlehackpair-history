@@ -15,7 +15,7 @@ void main(void) {
     float alpha =
         smoothstep(1.0, 0.9, abs(st.x)) * smoothstep(1.0, 0.9, abs(st.y));
 
-    vec3 bgcol = vec3(1.0, 1.0, 1.0);
+    vec3 bgcol = vec3(0.0, 0.0, 0.0);
     vec3 obcol = texture2D(uTexture, uv).rgb;
 
     float depth =smoothstep(30.0, 10.0,  vdepth); 
@@ -45,12 +45,15 @@ void main(void) {
 
 
 export default class extends THREE.Object3D {
-    constructor(altas, idx) {
+    constructor(altas, idx, infos) {
         super();
+
+        //get Info Lists
+        this.infos = infos;
 
         //Setup Index
         this.idx = idx;
-        this.mrk = false;
+        
 
         //Setup Uniform
         this.unif = {
@@ -73,10 +76,12 @@ export default class extends THREE.Object3D {
         this.add(this.body);
 
         //create radian
-        this.radian = idx *  Math.PI * 2.0 / 50.0;//MaxCount;
+        this.radian = idx * Math.PI * 2.0 / 50.0;//MaxCount;
         this.swipe = 0.0;
 
         //create transform
+        this.ratio = 1.0;
+
         this.ViewPosition = new THREE.Vector3();
         this.ViewScale = new THREE.Vector3();
 
@@ -89,12 +94,53 @@ export default class extends THREE.Object3D {
 
         //create Look Target
         this.looker = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.updateMode = () => {};
+
+        this._init();
+        this._reload();
+        this.updateMode = this._updateViewMode;
     }
 
     update(t, dt, cam) {
         if (dt > 0.1) dt = 0.0;
         this.updateMode(t, dt, cam);
+    }
+
+    _init() {
+
+        //init scale
+        this.ViewScale.x = 1.0;
+        this.ViewScale.y = 2.0 * this.ViewScale.x / this.ratio;
+
+        this.UIScale.x = 0.5;
+        this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
+
+        //create localposition
+        this.ViewPosition.x = Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0);
+        this.ViewPosition.y = 0.0;
+        this.ViewPosition.z = Math.random() * 40.0 - 20.0;
+
+        this.UIPosition.x = 0.0;
+        this.UIPosition.y = 0.0;
+        this.UIPosition.z = 0.0;
+
+        this.position.x = this.ViewPosition.x;
+        this.position.y = this.ViewPosition.y;
+        this.position.z = this.ViewPosition.z;
+
+    }
+
+    _reload() {
+
+        const idxs = (this.infos.length * Math.random()) << 0;
+        const info = this.infos[idxs];
+
+        if(idxs) {
+            this.ratio = info.width / info.height;
+            this.unif.uOffset.value = [info.left, info.top, info.width, info.height];
+        } else {
+            this.ratio = 1.0;
+            this.unif.uOffset.value = [0.0, 0.0, 0.0, 0.0];
+        }
     }
 
     _updateViewMode(t, dt, cam) {
@@ -104,12 +150,13 @@ export default class extends THREE.Object3D {
         if (this.ViewPosition.z < -20.0) {
             this.ViewPosition.z += 40.0;
             this.position.z = this.ViewPosition.z;
+            this._reload();
         }
 
         this.position.x += (this.ViewPosition.x - this.position.x) * dt;
         this.position.y += (this.ViewPosition.y - this.position.y) * dt;
         this.position.z += (this.ViewPosition.z - this.position.z) * dt;
-        
+
         this.scale.x += (this.ViewScale.x - this.scale.x) * dt;
         this.scale.y += (this.ViewScale.y - this.scale.y) * dt;
         this.scale.z += (this.ViewScale.z - this.scale.z) * dt;
@@ -117,7 +164,7 @@ export default class extends THREE.Object3D {
         this.looker.x += (cam.position.x + this.position.x - this.looker.x) * dt * 10.0;
         this.looker.y += (cam.position.y - this.looker.y) * dt * 10.0;
         this.looker.z += (cam.position.z + this.position.z - this.looker.z) * dt * 10.0;
-        
+
 
         this.lookAt(this.looker);
     }
@@ -125,8 +172,8 @@ export default class extends THREE.Object3D {
     _updateUIMode(t, dt, cam) {
         this.UIPosition.x = cam.position.x + 10.0 * Math.sin(this.radian + this.swipe);
         this.UIPosition.y = cam.position.y - 5.2;
-        this.UIPosition.z = cam.position.z + 10.0 * Math.cos(this.radian + this.swipe);  
-        
+        this.UIPosition.z = cam.position.z + 10.0 * Math.cos(this.radian + this.swipe);
+
         this.position.x += (this.UIPosition.x - this.position.x) * dt * 10.0;
         this.position.y += (this.UIPosition.y - this.position.y) * dt * 10.0;
         this.position.z += (this.UIPosition.z - this.position.z) * dt * 10.0;
@@ -142,46 +189,19 @@ export default class extends THREE.Object3D {
         this.lookAt(this.looker);
     }
 
-    _init() {
-
-        //init scale
-        this.ViewScale.x = 2.0;
-        this.ViewScale.y = 2.0 * this.ViewScale.x / this.ratio;
-
-        this.UIScale.x = 0.5;
-        this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
-
-        //create localposition
-        this.ViewPosition.x = Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0);
-        this.ViewPosition.y = 0.0;
-        this.ViewPosition.z = 20.0;
-
-        this.UIPosition.x = 0.0;
-        this.UIPosition.y = 0.0;
-        this.UIPosition.z = 0.0;
-
-        this.position.x = this.ViewPosition.x;
-        this.position.y = this.ViewPosition.y;
-        this.position.z = this.ViewPosition.z;
-
-    }
-
     SetUIMode() {
-        if(this.mrk == true)
-            this.updateMode = this._updateUIMode;
+        this.updateMode = this._updateUIMode;
     }
 
     SetViewMode() {
-        if(this.mrk == true)
-            this.updateMode = this._updateViewMode;
+        this.updateMode = this._updateViewMode;
     }
 
     Start(infos) {
+        this._init();
+
         this.ratio = infos.width / infos.height;
         this.unif.uOffset.value = [infos.left, infos.top, infos.width, infos.height];
-        this.mrk = true;
-
-        this._init();
 
         this.SetViewMode();
     }

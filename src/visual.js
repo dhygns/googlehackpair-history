@@ -1,4 +1,6 @@
 import * as THREE from "three"
+import Config from "./config.js"
+
 import Frame from "./visual/frame.js"
 import Canvas from "./visual/canvas.js"
 import Camera from "./visual/camera.js"
@@ -6,12 +8,15 @@ import Camera from "./visual/camera.js"
 import Atlas from "./atlas/atlas.js"
 import Resource from "./manager/resource.js"
 class Visual {
-    constructor() {
+    constructor(resource) {
+        //info Lists
+        this.infos = [];
+
         //Setup Size for render
         this.resolution = {width : window.innerWidth, height : window.innerHeight};
 
         //Setup Renderer
-        this.rdrr = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        this.rdrr = new THREE.WebGLRenderer({ alpha: false, antialias: true });
         this.rdrr.setSize(this.resolution.width, this.resolution.height);
         document.body.appendChild(this.rdrr.domElement);
 
@@ -28,18 +33,14 @@ class Visual {
         //Setup Altas for history
         this.atlas = new Atlas(this.rdrr);
 
-        //Setup ImageLoader
-        this.loader = new THREE.TextureLoader();
-        this.resources = {};
-
-        //Setup Resources
-        this.resource = new Resource();
+        //Setup resource Manager
+        this.resource = resource;
         
         //Setup Scene objects
         this.frameIdx = 0;
         this.frames = [];
         for(var i = 0 ; i < 50; i++) {
-            const frame = new Frame(this.atlas.texture, i);
+            const frame = new Frame(this.atlas.texture, i, this.infos);
             this.frames.push(frame);
             this.scene.add(frame)
         }
@@ -68,31 +69,27 @@ class Visual {
 
     action(config) {
         //Count of Resources Objects
-        const objectCount = Object.keys(this.resources).length;
-
-        console.log(objectCount, config.length);
+        const objectCount = this.resource.Count;
 
         for(var idx = objectCount; idx < config.length ; idx++) {
-            const {originName} = config[idx];
-            const URLPath = originName;
+            const conf = config[idx];
+            this.resource.load(
+                conf,
+                (tex)=>{
+                    const infos = this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex);
+                    this.infos.push(infos);
 
-            this.loader.crossOrigin = '';
-            this.loader.load(URLPath, ((name, tex) => {
-                tex.minFilter = tex.magFilter = THREE.LinearFilter;
-                
-                console.log(name, tex);
-                this.resources[name] = tex;
-                
-                const infos = this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex);
-                this.frames[this.frameIdx].Start(infos);
-
-                this.frameIdx = (this.frameIdx + 1) % 50;
-
-                this.canvas.doAction(tex, tex, tex, 5.0);
-                this.camera.doAction(5.0);
-
-            }).bind(this, originName))
+                    this.frames[this.frameIdx].Start(infos);
+                    this.frameIdx = (this.frameIdx + 1) % 50;
+                });
         }
+
+        this.resource.onLoad = (function(os, ss, rs) {
+            console.log(os, ss, rs);
+
+            this.canvas.doAction(os, ss, rs, 5.0);
+            this.camera.doAction(5.0);
+        }).bind(this);
     }
 }
 

@@ -1,36 +1,62 @@
 import * as THREE from "three"
-
-const textures = [
-    "dummy.jpg"
-];
-
-const jsons = [
-    "history.json"
-];
-
+import Config from "./../config.js"
 
 export default class {
     constructor() {
+        this.manager = new THREE.LoadingManager();
+        this.loader = new THREE.TextureLoader(this.manager);
+        this.loader.crossOrigin = '';
 
-        // this.textures = {};
-        // this.textureloader = new THREE.TextureLoader(manager);
-        // this.jsonloader = new THREE.FileLoader(manager);
+        this.confList = [];
 
-
-        // textures.forEach((name) => {
-        //     this.textureloader.load("res/images/" + name, ((id, tex) => {
-        //         tex.minFilter = tex.magFilter = THREE.LinearFilter;
-        //         this.textures[id] = tex;
-        //     }).bind(this, name))
-        // });
-
-        // jsons.forEach((name) => {
-        //     this.textureloader.load("res/json/" + name, ((id, text) => {
-        //         this.textures[id] = JSON.parse(text);
-        //     }).bind(this, name))
-        // });
+        this.originTexture = undefined;
+        this.styleTexture = undefined;
+        this.resultTexture = undefined;
     }
 
-    get texture() { return this.textures; }
-    get json() { return this.jsons; }
+    load(info, callback) {
+        const IP = Config.SOCKET_HOST + ":" + Config.SOCKET_PORT + "/";
+
+        const originSrc = IP + info.originSrc;
+        const styleSrc = IP + info.styleSrc;
+        const resultSrc = IP + info.resultSrc;
+
+        this.originTexture = null;
+        this.styleTexture = null;
+        this.resultTexture = null;
+
+        this.confList.push(info);
+
+        this.loader.load(originSrc, ((tex) => { 
+            console.log("Origin Src Loaded");
+            tex.minFilter = tex.magFilter = THREE.LinearFilter; 
+            this.originTexture = tex; 
+            
+        }).bind(this));
+
+        this.loader.load(styleSrc, ((tex) => { 
+            console.log("Style Src Loaded");            
+            tex.minFilter = tex.magFilter = THREE.LinearFilter; 
+            this.styleTexture = tex; 
+        }).bind(this));
+
+        this.loader.load(resultSrc, ((cb, tex) => { 
+            console.log("Result Src Loaded");
+            tex.minFilter = tex.magFilter = THREE.LinearFilter; 
+            this.resultTexture = tex; 
+            cb(tex);
+        }).bind(this, callback));
+    }
+
+    set onLoad(callback) {
+        this.manager.onLoad = () =>{
+            callback(this.originTexture, this.styleTexture, this.resultTexture);
+        };
+    }
+
+    getInfo(idx) { return this.confList[idx]; }
+
+    get Count() { return this.confList.length; }
+
+    
 }

@@ -8,15 +8,16 @@ varying vec2 vtex;
 
 void main(void) {
     vec2 st = vtex * 2.0 - 1.0;
-    vec4 OriginColor = texture2D(uOriginTexture, vtex);
-    vec4 TargetColor = texture2D(uTargetTexture, vtex);
-    vec4 StyledColor = texture2D(uStyledTexture, vtex);
+    vec2 it = vec2(vtex.x * 3.0, vtex.y);
+    vec4 OriginColor = texture2D(uOriginTexture, fract(it));
+    vec4 TargetColor = texture2D(uTargetTexture, fract(it));
+    vec4 StyledColor = texture2D(uStyledTexture, fract(it));
 
-    vec4 ResultColor = mix(OriginColor, TargetColor, smoothstep(0.3, 0.33, vtex.x));
-    ResultColor = mix(ResultColor, StyledColor, smoothstep(0.63, 0.66, vtex.x));
+    vec4 ResultColor = mix(OriginColor, TargetColor, smoothstep(0.99, 1.01, it.x));
+    ResultColor = mix(ResultColor, StyledColor, smoothstep(1.99, 2.01, it.x));
 
 
-    float alpha = smoothstep(0.99, 0.89, abs(st.x)) * smoothstep(0.99, 0.89, abs(st.y));
+    float alpha = 1.0;//smoothstep(0.99, 0.96, abs(st.x)) * smoothstep(0.99, 0.89, abs(st.y));
     ResultColor.a = alpha;
 
     gl_FragColor = ResultColor;
@@ -110,7 +111,8 @@ export default class extends THREE.Object3D {
             Math.random() * 5.0 + 1.0
         ];
 
-        this.scale.x = this.scale.y = 3.0;
+        this.scale.x = 6.0;
+        this.scale.y = 2.0;
         this.position.z = 5.0;
         this.position.y = 2.5;
         this._updateTodo = (t, dt) => {};
