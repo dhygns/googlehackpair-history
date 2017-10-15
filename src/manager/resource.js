@@ -15,7 +15,8 @@ export default class {
     }
 
     load(info, callback) {
-        const IP = Config.SOCKET_HOST + ":" + Config.SOCKET_PORT + "/";
+        var IP = "";
+        if(!Config.DEBUG) { IP = Config.SOCKET_HOST + ":" + Config.SOCKET_PORT + "/"; }
 
         const originSrc = IP + info.originSrc;
         const styleSrc = IP + info.styleSrc;

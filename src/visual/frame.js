@@ -3,6 +3,7 @@ import * as THREE from "three"
 
 //bursh fragment Shader
 const fragmentShader = `
+uniform float uClicked;
 uniform vec4 uOffset;
 uniform sampler2D uTexture;
 varying vec2 vtex;
@@ -20,6 +21,8 @@ void main(void) {
 
     float depth =smoothstep(30.0, 10.0,  vdepth); 
     vec3 retcol = mix(bgcol, obcol, depth);
+
+    if(uClicked > 0.5) retcol = mix(retcol, vec3(1.0, 0.0, 0.0), 0.1);
 
     gl_FragColor = vec4(retcol, alpha);
 }
@@ -52,13 +55,15 @@ export default class extends THREE.Object3D {
         this.infos = infos;
 
         //Setup Index
-        this.idx = idx;
+        this.idx = idx + 1;
+        this.hex = "#" + String("000000"+ this.idx.toString(16)).slice(-6);
+        this.clickedTime = 0.0;
         
-
         //Setup Uniform
         this.unif = {
             uOffset: { type: "4f", value: [0.0, 0.0, 0.0, 0.0] },
-            uTexture: { type: "t", value: altas }
+            uTexture: { type: "t", value: altas },
+            uClicked: { type:"1f", value: 0.0}
         };
 
         //Setup body
@@ -102,6 +107,9 @@ export default class extends THREE.Object3D {
 
     update(t, dt, cam) {
         if (dt > 0.1) dt = 0.0;
+        this.clickedTime -= dt;
+        if(this.clickedTime < 0.0) this.Released();
+
         this.updateMode(t, dt, cam);
     }
 
@@ -157,9 +165,9 @@ export default class extends THREE.Object3D {
         this.position.y += (this.ViewPosition.y - this.position.y) * dt;
         this.position.z += (this.ViewPosition.z - this.position.z) * dt;
 
-        this.scale.x += (this.ViewScale.x - this.scale.x) * dt;
-        this.scale.y += (this.ViewScale.y - this.scale.y) * dt;
-        this.scale.z += (this.ViewScale.z - this.scale.z) * dt;
+        this.scale.x += (this.ViewScale.x - this.scale.x) * dt * 10.0;
+        this.scale.y += (this.ViewScale.y - this.scale.y) * dt * 10.0;
+        this.scale.z += (this.ViewScale.z - this.scale.z) * dt * 10.0;
 
         this.looker.x += (cam.position.x + this.position.x - this.looker.x) * dt * 10.0;
         this.looker.y += (cam.position.y - this.looker.y) * dt * 10.0;
@@ -178,9 +186,9 @@ export default class extends THREE.Object3D {
         this.position.y += (this.UIPosition.y - this.position.y) * dt * 10.0;
         this.position.z += (this.UIPosition.z - this.position.z) * dt * 10.0;
 
-        this.scale.x += (this.UIScale.x - this.scale.x) * dt;
-        this.scale.y += (this.UIScale.y - this.scale.y) * dt;
-        this.scale.z += (this.UIScale.z - this.scale.z) * dt;
+        this.scale.x += (this.UIScale.x - this.scale.x) * dt * 10.0;
+        this.scale.y += (this.UIScale.y - this.scale.y) * dt * 10.0;
+        this.scale.z += (this.UIScale.z - this.scale.z) * dt * 10.0;
 
         this.looker.x += (cam.position.x - this.looker.x) * dt * 10.0;
         this.looker.y += (cam.position.y - this.looker.y) * dt * 10.0;
@@ -204,5 +212,27 @@ export default class extends THREE.Object3D {
         this.unif.uOffset.value = [infos.left, infos.top, infos.width, infos.height];
 
         this.SetViewMode();
+    }
+
+    Clicked() { 
+        this.unif.uClicked.value = 1.0; 
+        this.clickedTime = 2.0;
+
+        //init scale
+        this.ViewScale.x = 2.0;
+        this.ViewScale.y = 2.0 * this.ViewScale.x / this.ratio;
+
+        this.UIScale.x = 1.0;
+        this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
+    }
+    Released() { 
+        this.unif.uClicked.value = 0.0; 
+
+        //init scale
+        this.ViewScale.x = 1.0;
+        this.ViewScale.y = 2.0 * this.ViewScale.x / this.ratio;
+
+        this.UIScale.x = 0.5;
+        this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
     }
 };

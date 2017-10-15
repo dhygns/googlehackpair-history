@@ -11,13 +11,13 @@ import Visual from "./visual.js"
     setup: function () {
 
         //ForDebug
-        document.addEventListener("keydown", ({ key }) => {
-            if (key == " ") {
-                const info = this.resource.getInfo((this.resource.Count * Math.random()) << 0);
-                console.log(info);
-                this.network.req(info);
-            }
-        });
+        // document.addEventListener("keydown", ({ key }) => {
+        //     if (key == " ") {
+        //         const info = this.resource.getInfo((this.resource.Count * Math.random()) << 0);
+        //         console.log(info);
+        //         this.network.req(info);
+        //     }
+        // });
 
 
         console.log("HISTORY PROJECT");
@@ -27,7 +27,7 @@ import Visual from "./visual.js"
 
     action: function (res) {
         this.main.action(JSON.parse(res));
-        console.log(res);
+        // console.log(res);
     },
 
     update: function (t, dt) {

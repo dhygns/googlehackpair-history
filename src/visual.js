@@ -2,11 +2,14 @@ import * as THREE from "three"
 import Config from "./config.js"
 
 import Frame from "./visual/frame.js"
+import Picker from "./visual/picker.js"
 import Canvas from "./visual/canvas.js"
 import Camera from "./visual/camera.js"
 
 import Atlas from "./atlas/atlas.js"
-import Resource from "./manager/resource.js"
+
+import Mouse from "./manager/mouse.js"
+
 class Visual {
     constructor(resource) {
         //info Lists
@@ -24,7 +27,8 @@ class Visual {
         this.camera = new Camera();
 
         //Setup Scene for visual
-        this.scene = new THREE.Scene();
+        this.scene = new THREE.Scene(); //for Rendering
+        this.panel = new THREE.Scene(); //for ColorPick
 
         //Setup Canvas for visual
         this.canvas = new Canvas();
@@ -35,14 +39,19 @@ class Visual {
 
         //Setup resource Manager
         this.resource = resource;
+        this.mouse = new Mouse(this.rdrr, this.panel, this.camera);
         
         //Setup Scene objects
         this.frameIdx = 0;
         this.frames = [];
+        this.pickers = [];
         for(var i = 0 ; i < 50; i++) {
             const frame = new Frame(this.atlas.texture, i, this.infos);
+            const picker = new Picker(frame);
             this.frames.push(frame);
-            this.scene.add(frame)
+            this.scene.add(frame);
+            this.panel.add(picker);
+        
         }
 
 
@@ -61,15 +70,27 @@ class Visual {
 
         this.scene.children.forEach((person)=>{
             if(person.update) {
+                if(this.mouse.Clicked == person.idx) person.Clicked();
                 person.update(t, dt, this.camera);
+
             }
         })
+        this.panel.children.forEach((picker)=>{
+            if(picker.update) {
+                picker.update(t, dt);
+            }
+        });
+
+        this.mouse.update(t, dt);
         this.rdrr.render(this.scene, this.camera);
+        // this.rdrr.render(this.panel, this.camera);
+        // console.log(this.mouse.Clicked);
     }
 
     action(config) {
         //Count of Resources Objects
         const objectCount = this.resource.Count;
+        console.log(config);
 
         for(var idx = objectCount; idx < config.length ; idx++) {
             const conf = config[idx];
@@ -81,12 +102,13 @@ class Visual {
 
                     this.frames[this.frameIdx].Start(infos);
                     this.frameIdx = (this.frameIdx + 1) % 50;
-                });
+                }
+            );
         }
 
         this.resource.onLoad = (function(os, ss, rs) {
-            console.log(os, ss, rs);
-
+            // console.log(os, ss, rs);
+            console.log("ACTION");
             this.canvas.doAction(os, ss, rs, 5.0);
             this.camera.doAction(5.0);
         }).bind(this);
