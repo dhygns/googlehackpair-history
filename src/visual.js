@@ -11,9 +11,10 @@ import Atlas from "./atlas/atlas.js"
 import Mouse from "./manager/mouse.js"
 
 class Visual {
-    constructor(resource) {
+    constructor(resource, network) {
         //info Lists
         this.infos = [];
+        this.confg = [];
 
         //Setup Size for render
         this.resolution = {width : window.innerWidth, height : window.innerHeight};
@@ -39,6 +40,7 @@ class Visual {
 
         //Setup resource Manager
         this.resource = resource;
+        this.network = network;
         this.mouse = new Mouse(this.rdrr, this.panel, this.camera);
         
         //Setup Scene objects
@@ -70,7 +72,12 @@ class Visual {
 
         this.scene.children.forEach((person)=>{
             if(person.update) {
-                if(this.mouse.Clicked == person.idx) person.Clicked();
+                if(this.mouse.Clicked == person.idx) {
+                    person.Clicked();
+                    const info = this.resource.getInfo(person.rid);
+                    this.network.req(info);
+                }
+                if(person.Wheel) person.Wheel(this.mouse.Wheel);
                 person.update(t, dt, this.camera);
 
             }
@@ -90,17 +97,16 @@ class Visual {
     action(config) {
         //Count of Resources Objects
         const objectCount = this.resource.Count;
-        console.log(config);
 
         for(var idx = objectCount; idx < config.length ; idx++) {
             const conf = config[idx];
             this.resource.load(
                 conf,
                 (tex)=>{
-                    const infos = this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex);
-                    this.infos.push(infos);
+                    const info = this.atlas.addTextureToAtlas(tex.image.width, tex.image.height, tex);
+                    this.infos.push(info);
 
-                    this.frames[this.frameIdx].Start(infos);
+                    this.frames[this.frameIdx].Start(info, this.resource);
                     this.frameIdx = (this.frameIdx + 1) % 50;
                 }
             );

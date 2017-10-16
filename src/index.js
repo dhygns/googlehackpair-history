@@ -21,7 +21,7 @@ import Visual from "./visual.js"
 
 
         console.log("HISTORY PROJECT");
-        this.main = new Visual(this.resource);
+        this.main = new Visual(this.resource, this.network);
         this.animate(0, 0);
     },
 

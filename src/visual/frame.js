@@ -56,8 +56,10 @@ export default class extends THREE.Object3D {
 
         //Setup Index
         this.idx = idx + 1;
+        this.rid = 0;
         this.hex = "#" + String("000000"+ this.idx.toString(16)).slice(-6);
         this.clickedTime = 0.0;
+        this.wheelDelta = 0.0;
         
         //Setup Uniform
         this.unif = {
@@ -125,7 +127,7 @@ export default class extends THREE.Object3D {
         //create localposition
         this.ViewPosition.x = Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0);
         this.ViewPosition.y = 0.0;
-        this.ViewPosition.z = Math.random() * 40.0 - 20.0;
+        this.ViewPosition.z = Math.random() * 60.0 - 30.0;
 
         this.UIPosition.x = 0.0;
         this.UIPosition.y = 0.0;
@@ -140,7 +142,12 @@ export default class extends THREE.Object3D {
     _reload() {
 
         const idxs = (this.infos.length * Math.random()) << 0;
+        this.rid = idxs;
+        
         const info = this.infos[idxs];
+
+        this.ViewPosition.x = Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0);
+        this.position.x = this.ViewPosition.x;
 
         if(idxs) {
             this.ratio = info.width / info.height;
@@ -153,13 +160,21 @@ export default class extends THREE.Object3D {
 
     _updateViewMode(t, dt, cam) {
 
-        this.ViewPosition.z -= dt * 0.6;
-
-        if (this.ViewPosition.z < -20.0) {
-            this.ViewPosition.z += 40.0;
+        if (this.ViewPosition.z < -30.0) {
+            this.ViewPosition.z += 60.0;
             this.position.z = this.ViewPosition.z;
             this._reload();
         }
+        else if (this.ViewPosition.z > 30.0) {
+            this.ViewPosition.z += -60.0;
+            this.position.z = this.ViewPosition.z;
+            this._reload();
+        }
+
+        this.ViewPosition.z -= dt * 0.6;
+        this.wheelDelta += (0.0 - this.wheelDelta) * 10.0 * dt;
+        this.ViewPosition.z += this.wheelDelta * dt;
+
 
         this.position.x += (this.ViewPosition.x - this.position.x) * dt;
         this.position.y += (this.ViewPosition.y - this.position.y) * dt;
@@ -205,8 +220,10 @@ export default class extends THREE.Object3D {
         this.updateMode = this._updateViewMode;
     }
 
-    Start(infos) {
+    Start(infos, res) {
         this._init();
+        this.res = res;
+        // console.log(this.res.getInfo((this.res.Count * Math.random()) << 0));
 
         this.ratio = infos.width / infos.height;
         this.unif.uOffset.value = [infos.left, infos.top, infos.width, infos.height];
@@ -225,6 +242,7 @@ export default class extends THREE.Object3D {
         this.UIScale.x = 1.0;
         this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
     }
+
     Released() { 
         this.unif.uClicked.value = 0.0; 
 
@@ -234,5 +252,9 @@ export default class extends THREE.Object3D {
 
         this.UIScale.x = 0.5;
         this.UIScale.y = 2.0 * this.UIScale.x / this.ratio;
+    }
+
+    Wheel(v) {
+        this.wheelDelta = Math.sign(v) * Math.min(Math.abs(v), 30.0);
     }
 };

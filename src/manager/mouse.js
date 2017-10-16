@@ -10,6 +10,7 @@ export default class {
         this.ms = false;
 
         this.ci = -1;
+        this.wi = 0;
         // gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
         // var data = new Uint8Array(renderTarget.width * renderTarget.height * 4);
         // gl.readPixels(0,0,renderTarget.width,renderTarget.heigh,gl.RGBA,gl.UNSIGNED_BYTE,data);
@@ -33,13 +34,19 @@ export default class {
             this.mp[0] = pageX;;
             this.mp[1] = window.innerHeight - pageY;
             this.ms = true;
-        })
+        });
+
 
         document.addEventListener("mouseup", ({pageX, pageY})=>{
             this.mp[0] = pageX;
             this.mp[1] = window.innerHeight - pageY;
             this.ms = false;
-        })
+        });
+
+        document.addEventListener("mousewheel", ({wheelDelta})=>{
+            this.wi = wheelDelta;
+        });
+
     }
 
     update(t, dt) {
@@ -64,4 +71,6 @@ export default class {
     }
 
     get Clicked() { return this.ci; }
+
+    get Wheel() { return this.wi; }
 }
