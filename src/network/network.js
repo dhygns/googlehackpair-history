@@ -19,11 +19,11 @@ export default class {
             //added Debug Event
             document.addEventListener("keydown", ({ key }) => {
                 if (key != " ") return;
-                const idx =  Math.round(Math.random() * 6.0);
+                const idx = Math.round(Math.random() * 6.0);
                 this.res.push({
                     originSrc: "./res/images/dummy0" + idx + ".jpg",
                     styleSrc: "./res/images/dummy0" + idx + ".jpg",
-                    resultSrc: "./res/images/dummy0" + idx+ ".jpg",
+                    resultSrc: "./res/images/dummy0" + idx + ".jpg",
                     styleName: "DUMMY NAME",
                     styleId: "STYLE ID",
                     createdDate: "2017.10.21",
@@ -65,7 +65,11 @@ export default class {
         // }
     }
 
-    req(str) { this.socket.emit("select-result-request", str); }
+    req(str) {
+        if (!Config.DEBUG) {
+            this.socket.emit("select-result-request", str);
+        }
+    }
 
     get IP() { return Config.SOCKET_HOST + ":" + Config.SOCKET_PORT; }
 }
