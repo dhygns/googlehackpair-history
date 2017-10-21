@@ -149,7 +149,14 @@ export default class {
         const w = width / this.width * resolution;
         const h = height / this.height * resolution;
 
-        if(this.left + w > 1.0) { this.left = 0.0; this.top += Math.max(this.maxheight, h); }
+        if(this.left + w > 1.0) { 
+            this.left = 0.0; 
+            this.top += Math.max(this.maxheight, h); 
+            if(this.top > 1.0) {
+                this.left = 0.0; this.top = 0.0;
+            }
+        }
+
 
         retobj.left = this.left;
         retobj.top = this.top;

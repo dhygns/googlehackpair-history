@@ -140,12 +140,11 @@ export default class extends THREE.Object3D {
     }
 
     _reload() {
-
         const idxs = (this.infos.length * Math.random()) << 0;
-        this.rid = idxs;
         
+        this.rid = idxs;
         const info = this.infos[idxs];
-
+        
         this.ViewPosition.x = Math.sign(Math.random() - 0.5) * (Math.random() * 7.0 + 3.0);
         this.position.x = this.ViewPosition.x;
 
@@ -223,7 +222,6 @@ export default class extends THREE.Object3D {
     Start(infos, res) {
         this._init();
         this.res = res;
-        // console.log(this.res.getInfo((this.res.Count * Math.random()) << 0));
 
         this.ratio = infos.width / infos.height;
         this.unif.uOffset.value = [infos.left, infos.top, infos.width, infos.height];

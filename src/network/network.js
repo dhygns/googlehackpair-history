@@ -67,6 +67,7 @@ export default class {
 
     req(str) {
         if (!Config.DEBUG) {
+            console.log(str);
             this.socket.emit("select-result-request", str);
         }
     }

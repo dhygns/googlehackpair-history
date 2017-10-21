@@ -115,8 +115,8 @@ class Visual {
         this.resource.onLoad = (function(os, ss, rs) {
             // console.log(os, ss, rs);
             console.log("ACTION");
-            this.canvas.doAction(os, ss, rs, 5.0);
-            this.camera.doAction(5.0);
+            this.canvas.doAction(os, ss, rs, 20.0);
+            this.camera.doAction(20.0);
         }).bind(this);
     }
 }

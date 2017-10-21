@@ -8,6 +8,7 @@ export default class {
         this.loader.crossOrigin = '';
 
         this.confList = [];
+        this.srcList = {};
 
         this.originTexture = undefined;
         this.styleTexture = undefined;
@@ -26,8 +27,6 @@ export default class {
         this.styleTexture = null;
         this.resultTexture = null;
 
-        this.confList.push(info);
-
         this.loader.load(originSrc, ((tex) => { 
             console.log("Origin Src Loaded");
             tex.minFilter = tex.magFilter = THREE.LinearFilter; 
@@ -35,18 +34,25 @@ export default class {
             
         }).bind(this));
 
-        this.loader.load(styleSrc, ((tex) => { 
-            console.log("Style Src Loaded");            
-            tex.minFilter = tex.magFilter = THREE.LinearFilter; 
-            this.styleTexture = tex; 
-        }).bind(this));
+        if(this.srcList[styleSrc] != undefined) {
+            this.styleTexture = this.srcList[styleSrc]; 
+        } else {
+            this.loader.load(styleSrc, ((url, tex) => { 
+                console.log("Style Src Loaded");            
+                tex.minFilter = tex.magFilter = THREE.LinearFilter; 
+                this.styleTexture = tex; 
+                this.srcList[url] = tex;
+            }).bind(this, styleSrc));
+        }
 
-        this.loader.load(resultSrc, ((cb, tex) => { 
+        this.loader.load(resultSrc, ((cb, info, tex) => { 
             console.log("Result Src Loaded");
             tex.minFilter = tex.magFilter = THREE.LinearFilter; 
             this.resultTexture = tex; 
+            
+            this.confList.push(info);
             cb(tex);
-        }).bind(this, callback));
+        }).bind(this, callback, info));
     }
 
     set onLoad(callback) {

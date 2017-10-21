@@ -52,7 +52,7 @@ export default class {
     update(t, dt) {
         this.rdrr.render(this.scene, this.camera);
         this.gl.readPixels(this.mp[0], this.mp[1], 1, 1, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.po);
-
+        this.wi += (0.0 - this.wi) * 5.0 * dt;
         //hover status
         if(this.po[2] != 0) {
             document.body.style.cursor = "pointer";

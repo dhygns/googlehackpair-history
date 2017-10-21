@@ -1,5 +1,5 @@
 export default {
-    SOCKET_HOST : "http://192.168.43.209",
+    SOCKET_HOST : "http://192.168.255.214",
     SOCKET_PORT : "5000",
-    DEBUG : true
+    DEBUG : false
 };
